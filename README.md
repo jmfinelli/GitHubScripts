@@ -40,3 +40,5 @@ gh api \
 * [Webhook events and payloads](https://docs.github.com/en/webhooks/webhook-events-and-payloads)
 * [Workflows and Actions](https://docs.github.com/en/enterprise-cloud@latest/actions/reference/workflows-and-actions)
 * [Reuse workflows](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows)
+* [Permissions required for GitHub Apps](https://docs.github.com/en/rest/authentication/permissions-required-for-github-apps?apiVersion=2022-11-28)
+* [Control permissions for GITHUB_TOKEN](https://github.blog/changelog/2021-04-20-github-actions-control-permissions-for-github_token/)
