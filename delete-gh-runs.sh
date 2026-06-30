@@ -49,11 +49,11 @@ echo "Fetching runs for $REPO..."
 while true; do
   if [ -n "$PR_NUMBER" ]; then
     # Filter workflow runs triggered by pull requests and matching branch
-    RUN_IDS=$(gh run list --repo "$REPO" --limit 100 --json databaseId,event,headBranch \
+    RUN_IDS=$(gh run list --repo "$REPO" --limit 500 --json databaseId,event,headBranch \
       -q ".[] | select(.event == \"pull_request\" and .headBranch == \"$HEAD_BRANCH\") | .databaseId")
   else
     # Get all workflow runs
-    RUN_IDS=$(gh run list --repo "$REPO" --limit 100 --json databaseId -q '.[].databaseId')
+    RUN_IDS=$(gh run list --repo "$REPO" --limit 500 --json databaseId -q '.[].databaseId')
   fi
 
   if [ -z "$RUN_IDS" ]; then
@@ -61,10 +61,22 @@ while true; do
     break
   fi
 
+  TOTAL=$(echo "$RUN_IDS" | wc -l | tr -d ' ')
+  echo "📊 Found $TOTAL runs to delete in this batch"
+  COUNT=0
+
   echo "$RUN_IDS" | while read -r RUN_ID; do
     if [ -n "$RUN_ID" ]; then
-      echo "🗑️  Deleting run ID: $RUN_ID"
-      gh run delete "$RUN_ID" --repo "$REPO"
+      COUNT=$((COUNT + 1))
+      echo "🗑️  [$COUNT/$TOTAL] Deleting run ID: $RUN_ID"
+      for attempt in 1 2 3; do
+        if gh run delete "$RUN_ID" --repo "$REPO" 2>/dev/null; then
+          break
+        fi
+        echo "⚠️  Attempt $attempt failed for $RUN_ID, retrying in $((attempt * 5))s..."
+        sleep $((attempt * 5))
+      done
+      sleep 0.3
     fi
   done
 done
