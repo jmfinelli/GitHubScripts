@@ -4,8 +4,8 @@
 #   ./delete-gh-runs.sh [owner/repo] [--pr <number>]
 #
 # Examples:
-#   ./delete.sh myorg/myrepo
-#   ./delete.sh myorg/myrepo --pr 123
+#   ./delete-gh-runs.sh myorg/myrepo
+#   ./delete-gh-runs.sh myorg/myrepo --pr 123
 
 set -e
 
